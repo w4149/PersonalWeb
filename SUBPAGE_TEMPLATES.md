@@ -2,6 +2,8 @@
 
 适用于 `lib/works-data.ts` 中每个作品的 `subPages?: SubPage[]` 字段。所有附页共享：
 
+> **⚠️ galleryView 模板的特殊用法**：当作品 `layout: "galleryView"` 时，`subPages[].images` 不会被渲染为独立附页，而是被合并到主页作为**额外视角图**（views = `[work.thumbnail, ...所有 subPages images]`）。此时 `subPages` 的 `layout` 字段不生效，仅 `images` 数组被消费。详见 [WORK_LAYOUT_TEMPLATES.md → GalleryViewLayout](./WORK_LAYOUT_TEMPLATES.md)。
+
 - 图片：**一律用 `<SafeImg>` 三级容错**（原图 → 作品 `work.thumbnail` → 内联 SVG 灰块兜底，见下文 §1.2）。
 - 响应式：桌面端复杂拼贴 / 双栏 / 同行等高；**移动端 <768px 统一降级为纵向堆叠**（每张 `w-full / h-auto / maxHeight 60vh`，顺序 = `images[]` 下标顺序），无需手动写移动分支。
 - caption 规格：per-image `image.caption` 写在**图底永久显示**（mt-2 / 10px / opacity 0.5 / text-center / 深灰），与 WORKS 分类画廊、主页 heroCaption 三套**样式完全统一**（§0.3 对照表）。
