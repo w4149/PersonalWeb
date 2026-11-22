@@ -80,7 +80,7 @@ export interface Project {
   slug: string;
   title: string;                 // 来自 CSV introduction.csv
   coverImage: string;
-  contentDir?: string;           // content/projects/{contentDir}/ 目录名（如 "hui-yi"）
+  contentDir?: string;           // content/projects/{contentDir}/ 目录名（如 "memory"）
   time?: string;                 // 时间（来自 CSV）
   address?: string;              // 地点（来自 CSV）
   description: string;           // 中文简介
@@ -196,7 +196,7 @@ outputFileTracingIncludes: {
 示例：
 
 ```
-public/images/projects/hui-yi/
+public/images/projects/memory/
 ├── detail-1.jpg          ← 主图（行号 1）
 ├── detail-1-1.jpg        ← 行号 1 的附加图 1
 ├── detail-1-2.jpg        ← 行号 1 的附加图 2
@@ -210,7 +210,7 @@ public/images/projects/hui-yi/
 
 项目 / 展览图片存放在 `public/images/projects/` 或 `public/images/exhibitions/` 下。
 
-- **项目**：文件夹名 = `contentDir`（主题名，如 `hui-yi` / `through-our-own-filters`），**不是** slug。`works-data.ts` 中 `coverImage / views / details[].image` 都指向该文件夹。
+- **项目**：文件夹名 = `contentDir`（主题名，如 `memory` / `through-our-own-filters`），**不是** slug。`works-data.ts` 中 `coverImage / views / details[].image` 都指向该文件夹。
 - **展览**：文件夹名 = slug（如 `when-everything-changes`）。
 
 项目文件夹内通常包含：
@@ -488,7 +488,7 @@ export async function generateMetadata({ params }) {
 
 ### 6.2 新建 Project 的标准流程（CSV 驱动，无需手写文字）
 
-1. **建内容目录**：在 `content/projects/` 下新建主题名文件夹（如 `hui-yi`），放入：
+1. **建内容目录**：在 `content/projects/` 下新建主题名文件夹（如 `memory`），放入：
    - `introduction.csv`（GBK，表头 `title,time,address,introduction,introduction-en`，第 2 行数据）
    - `details.csv`（GBK，第 1 行 `count,N`，第 2 行表头，第 3 行起数据；含 `level` 列）
 2. **建图片目录**：在 `public/images/projects/` 下新建**同名**主题名文件夹，放入封面图、`view-N.jpg`、`detail-N.jpg`，需要时放 `detail-{n}-{m}.jpg` 附加图（自动扫描）。

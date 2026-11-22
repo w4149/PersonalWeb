@@ -1,11 +1,11 @@
 import type { Work } from "@personal-sites/shared";
-import { getProjectIntro, getProjectDetails, getExhibitionIntro, getProjectExtraImages } from "./content-loader";
+import { getProjectIntro, getProjectDetails, getExhibitionIntro } from "./content-loader";
 
-const R2 = "https://pub-0152450371c44ecb87bb433ea94e2039.r2.dev";
+export const R2 = "https://pub-191526e40b2f4ebe994bafe555eeeeb7.r2.dev";
 const BLANK = `${R2}/images/blank.svg`;
 
-/** 本地图片路径前缀（public/images/whole-works/） */
-const IMG = "/images/whole-works";
+/** R2 图片路径前缀（whole-works/） */
+const IMG = `${R2}/images/whole-works`;
 
 // ============================================================
 // WholeWorks —— 资源库，不直接呈现在网页上
@@ -422,7 +422,7 @@ export interface Project {
   slug: string;
   title: string;
   coverImage: string;
-  /** CSV 内容目录名（content/projects/{contentDir}/），如 "hui-yi" */
+  /** CSV 内容目录名（content/projects/{contentDir}/），如 "memory" */
   contentDir?: string;
   /** 时间（不区分语言，来自 CSV） */
   time?: string;
@@ -440,24 +440,23 @@ export interface Project {
 /**
  * 项目数据。
  * - 文本内容（标题/介绍/详情）从 content/projects/{contentDir}/ 下的 CSV 读取
- * - 详情附加图片（detail-{行号}-{序号}.jpg）由 getProjectExtraImages 自动扫描图片目录
- * - 新增/删除图片或修改 CSV 后，需重新编译（dev 下保存本文件触发，或重启 dev server）
+ * - 详情附加图片（detail-{行号}-{序号}.jpg）数量由 details.csv 的 extra 列声明
+ * - 修改 CSV 后需重新编译（dev 下保存本文件触发，或重启 dev server）
  */
 export const projects: Project[] = [
   (() => {
-    const contentDir = "hui-yi";
+    const contentDir = "memory";
     const intro = getProjectIntro(contentDir);
     const detailsCsv = getProjectDetails(contentDir);
-    const extraImages = getProjectExtraImages(contentDir);
     // 详情图路径与 CSV 行一一对应
     const detailImages = Array.from(
       { length: detailsCsv.length },
-      (_, i) => `/images/projects/${contentDir}/detail-${i + 1}.jpg`
+      (_, i) => `${R2}/images/projects/${contentDir}/detail-${i + 1}.jpg`
     );
     return {
       slug: "project-1",
       title: intro.title || "回忆",
-      coverImage: `/images/projects/${contentDir}/project-1.jpg`,
+      coverImage: `${R2}/images/projects/${contentDir}/project-1.jpg`,
       contentDir,
       time: intro.time || undefined,
       address: intro.address || undefined,
@@ -465,7 +464,7 @@ export const projects: Project[] = [
       descriptionEn: intro.en,
       views: Array.from(
         { length: 12 },
-        (_, i) => `/images/projects/${contentDir}/view-${i + 1}.jpg`
+        (_, i) => `${R2}/images/projects/${contentDir}/view-${i + 1}.jpg`
       ),
       details: detailsCsv.map((d, i) => ({
         image: detailImages[i] ?? "",
@@ -474,7 +473,12 @@ export const projects: Project[] = [
         titleEn: d.titleEn || undefined,
         textEn: d.detailEn || undefined,
         level: d.level,
-        extraImages: extraImages[d.index] ?? undefined,
+        extraImages: d.extra > 0
+          ? Array.from(
+              { length: d.extra },
+              (_, k) => `${R2}/images/projects/${contentDir}/detail-${d.index}-${k + 1}.jpg`
+            )
+          : undefined,
       })),
       works: ["sheng-zhang", "bloom", "ling", "blue-flamingo", "guo-jie", "jin-kou", "chi"],
     };
@@ -483,15 +487,14 @@ export const projects: Project[] = [
     const contentDir = "through-our-own-filters";
     const intro = getProjectIntro(contentDir);
     const detailsCsv = getProjectDetails(contentDir);
-    const extraImages = getProjectExtraImages(contentDir);
     const detailImages = Array.from(
       { length: detailsCsv.length },
-      (_, i) => `/images/projects/${contentDir}/detail-${i + 1}.jpg`
+      (_, i) => `${R2}/images/projects/${contentDir}/detail-${i + 1}.jpg`
     );
     return {
       slug: "project-2",
       title: intro.title || "Through Our Own Filters",
-      coverImage: `/images/projects/${contentDir}/preview/through-our-own-filters.webp`,
+      coverImage: `${R2}/images/projects/${contentDir}/preview/through-our-own-filters.webp`,
       contentDir,
       time: intro.time || undefined,
       address: intro.address || undefined,
@@ -499,7 +502,7 @@ export const projects: Project[] = [
       descriptionEn: intro.en,
       views: Array.from(
         { length: 8 },
-        (_, i) => `/images/projects/${contentDir}/view-${i + 1}.jpg`
+        (_, i) => `${R2}/images/projects/${contentDir}/view-${i + 1}.jpg`
       ),
       details: detailsCsv.map((d, i) => ({
         image: detailImages[i] ?? "",
@@ -508,7 +511,12 @@ export const projects: Project[] = [
         titleEn: d.titleEn || undefined,
         textEn: d.detailEn || undefined,
         level: d.level,
-        extraImages: extraImages[d.index] ?? undefined,
+        extraImages: d.extra > 0
+          ? Array.from(
+              { length: d.extra },
+              (_, k) => `${R2}/images/projects/${contentDir}/detail-${d.index}-${k + 1}.jpg`
+            )
+          : undefined,
       })),
       works: [],
     };
@@ -517,15 +525,14 @@ export const projects: Project[] = [
     const contentDir = "behind-the-display";
     const intro = getProjectIntro(contentDir);
     const detailsCsv = getProjectDetails(contentDir);
-    const extraImages = getProjectExtraImages(contentDir);
     const detailImages = Array.from(
       { length: detailsCsv.length },
-      (_, i) => `/images/projects/${contentDir}/detail-${i + 1}.jpg`
+      (_, i) => `${R2}/images/projects/${contentDir}/detail-${i + 1}.jpg`
     );
     return {
       slug: "project-3",
       title: intro.title || "Behind the Display",
-      coverImage: `/images/projects/${contentDir}/behind-the-display.jpg`,
+      coverImage: `${R2}/images/projects/${contentDir}/behind-the-display.jpg`,
       contentDir,
       time: intro.time || undefined,
       address: intro.address || undefined,
@@ -533,7 +540,7 @@ export const projects: Project[] = [
       descriptionEn: intro.en,
       views: Array.from(
         { length: 13 },
-        (_, i) => `/images/projects/${contentDir}/view-${i + 1}.jpg`
+        (_, i) => `${R2}/images/projects/${contentDir}/view-${i + 1}.jpg`
       ),
       details: detailsCsv.map((d, i) => ({
         image: detailImages[i] ?? "",
@@ -542,7 +549,12 @@ export const projects: Project[] = [
         titleEn: d.titleEn || undefined,
         textEn: d.detailEn || undefined,
         level: d.level,
-        extraImages: extraImages[d.index] ?? undefined,
+        extraImages: d.extra > 0
+          ? Array.from(
+              { length: d.extra },
+              (_, k) => `${R2}/images/projects/${contentDir}/detail-${d.index}-${k + 1}.jpg`
+            )
+          : undefined,
       })),
       works: [],
     };
@@ -551,15 +563,14 @@ export const projects: Project[] = [
     const contentDir = "drawn-into-the-depths";
     const intro = getProjectIntro(contentDir);
     const detailsCsv = getProjectDetails(contentDir);
-    const extraImages = getProjectExtraImages(contentDir);
     const detailImages = Array.from(
       { length: detailsCsv.length },
-      (_, i) => `/images/projects/${contentDir}/detail-${i + 1}.jpg`
+      (_, i) => `${R2}/images/projects/${contentDir}/detail-${i + 1}.jpg`
     );
     return {
       slug: "project-4",
       title: intro.title || "Drawn into the Depths",
-      coverImage: `/images/projects/${contentDir}/drawn-into-the-depths.jpg`,
+      coverImage: `${R2}/images/projects/${contentDir}/drawn-into-the-depths.jpg`,
       contentDir,
       time: intro.time || undefined,
       address: intro.address || undefined,
@@ -567,7 +578,7 @@ export const projects: Project[] = [
       descriptionEn: intro.en,
       views: Array.from(
         { length: 11 },
-        (_, i) => `/images/projects/${contentDir}/view-${i + 1}.jpg`
+        (_, i) => `${R2}/images/projects/${contentDir}/view-${i + 1}.jpg`
       ),
       details: detailsCsv.map((d, i) => ({
         image: detailImages[i] ?? "",
@@ -576,7 +587,12 @@ export const projects: Project[] = [
         titleEn: d.titleEn || undefined,
         textEn: d.detailEn || undefined,
         level: d.level,
-        extraImages: extraImages[d.index] ?? undefined,
+        extraImages: d.extra > 0
+          ? Array.from(
+              { length: d.extra },
+              (_, k) => `${R2}/images/projects/${contentDir}/detail-${d.index}-${k + 1}.jpg`
+            )
+          : undefined,
       })),
       works: [],
     };
@@ -641,7 +657,7 @@ export const exhibitions: Exhibition[] = [
       dateRange: "2026",
       location: "TBD",
       coverImage:
-        "/images/exhibitions/when-everything-changes/when-everything-changes.jpg",
+        `${R2}/images/exhibitions/when-everything-changes/when-everything-changes.jpg`,
       contentDir,
       time: intro.time || undefined,
       address: intro.address || undefined,
@@ -649,7 +665,7 @@ export const exhibitions: Exhibition[] = [
       descriptionEn: intro.en,
       views: Array.from(
         { length: 6 },
-        (_, i) => `/images/exhibitions/when-everything-changes/view-${i + 1}.jpg`
+        (_, i) => `${R2}/images/exhibitions/when-everything-changes/view-${i + 1}.jpg`
       ),
       works: [
         "bloom", "ling", "white-field", "imbalance", "leng-qu",
@@ -669,7 +685,7 @@ export const exhibitions: Exhibition[] = [
       dateRange: "2025",
       location: "TBD",
       coverImage:
-        "/images/exhibitions/the-landscape-of-chaos/the-landscape-of-chaos.jpg",
+        `${R2}/images/exhibitions/the-landscape-of-chaos/the-landscape-of-chaos.jpg`,
       contentDir,
       time: intro.time || undefined,
       address: intro.address || undefined,
@@ -677,7 +693,7 @@ export const exhibitions: Exhibition[] = [
       descriptionEn: intro.en,
       views: Array.from(
         { length: 5 },
-        (_, i) => `/images/exhibitions/the-landscape-of-chaos/view-${i + 1}.jpg`
+        (_, i) => `${R2}/images/exhibitions/the-landscape-of-chaos/view-${i + 1}.jpg`
       ),
       works: [
         "v", "vii", "ix", "i", "ii", "iii",

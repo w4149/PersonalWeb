@@ -14,6 +14,7 @@ import {
   otherWorks,
   exhibitions,
   getOtherWork,
+  R2,
 } from "@/lib/works-data";
 
 const TITLE_FONT =
@@ -55,7 +56,7 @@ export default function HomePage() {
           style={{ left: "-12.5%", top: "-33.33%", width: "125%", height: "166.67%" }}
         >
           <Image
-            src="/images/backgrounds/background-1.jpg"
+            src={`${R2}/images/backgrounds/background-1.jpg`}
             alt=""
             fill
             sizes="100vw"
@@ -92,7 +93,7 @@ export default function HomePage() {
           {/* 艺术家照片 */}
           <div className="flex justify-center mb-10 md:mb-14">
             <Image
-              src="/images/introduction/yike_xie.jpg"
+              src={`${R2}/images/introduction/yike_xie.jpg`}
               alt="Xie Yike"
               width={2943}
               height={3924}
@@ -116,7 +117,7 @@ export default function HomePage() {
       <section className="snap-start h-[50vh] w-full relative overflow-hidden bg-gray-100">
         <div className="absolute inset-y-0" style={{ left: "-12.5%", width: "125%" }}>
           <Image
-            src="/images/bridges/bridge-to-exhibition.jpg"
+            src={`${R2}/images/bridges/bridge-to-exhibition.jpg`}
             alt=""
             fill
             sizes="125vw"

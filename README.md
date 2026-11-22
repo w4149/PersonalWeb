@@ -279,7 +279,7 @@ CSV 格式与 `details.csv` 的 level / 附加图片联动详见 [DETAIL_PAGE_TE
 | 过渡图 | `bridges/bridge-to-exhibition.jpg` | ABOUT → EXHIBITIONS 之间的 bridge |
 | 艺术家照片 | `introduction/yike_xie.jpg` | ABOUT 区块 |
 | 作品图 | `whole-works/{slug}/main.jpg` + `preview/*.webp` | WholeWorks 资源库 |
-| 项目图 | `projects/{contentDir}/...` | **文件夹用主题名**（如 `hui-yi`），非 slug |
+| 项目图 | `projects/{contentDir}/...` | **文件夹用主题名**（如 `memory`），非 slug |
 | 展览图 | `exhibitions/{slug}/...` | 文件夹用 slug |
 
 项目图片文件夹内通常包含：
@@ -388,7 +388,7 @@ cd apps/deng-manyuan ; npx tsc --noEmit
 - 多语言：**EN 默认 / 中文** 切换，持久化到 localStorage；项目/展览/简介文字已双语
 - 内容源：`content/` 下 CSV（GBK）驱动所有项目/展览/简介文字；`details.csv` 支持 level 分级与附加图片
 - Projects：4 个，全部接入 CSV 内容
-  - `project-1`「回忆 / hui-yi」：12 张 views + 16 条 details + 7 件作品
+  - `project-1`「回忆 / memory」：12 张 views + 16 条 details + 7 件作品
   - `project-2`「Through Our Own Filters」：8 张 views + 3 条 details（works 待指定）
   - `project-3`「Behind the Display」：13 张 views + 3 条 details（works 待指定）
   - `project-4`「Drawn into the Depths」：11 张 views + 2 条 details（works 待指定）
