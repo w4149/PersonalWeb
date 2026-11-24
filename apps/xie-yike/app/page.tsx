@@ -162,7 +162,6 @@ export default function HomePage() {
                 />
               </div>
               <div className="mt-6">
-                <p className="text-xs text-gray-400 mb-1 tracking-wide">{exhibition.status}</p>
                 <p className="text-sm text-gray-500 mb-1">Xie Yike</p>
                 <h3
                   className="text-xl sm:text-2xl md:text-3xl font-medium italic text-gray-900 mb-2 group-hover:text-gray-600 transition-colors"
