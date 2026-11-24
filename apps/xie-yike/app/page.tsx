@@ -52,13 +52,10 @@ export default function HomePage() {
       >
         {/* 文字内容 */}
         <div className="max-w-4xl w-full relative z-10 text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light tracking-tight text-white leading-tight">
-            Xie Yike{" "}
-            <span className="block sm:inline text-white/70 font-normal text-2xl sm:text-3xl md:text-5xl lg:text-6xl mt-2 sm:mt-0">
-              谢一可
-            </span>
+          <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tight text-white leading-tight uppercase">
+            Xie Yike
           </h1>
-          <p className="mt-4 sm:mt-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl italic text-white/80 font-light">
+          <p className="mt-4 sm:mt-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-light">
             <T k="ui.artistRole" />
           </p>
         </div>
