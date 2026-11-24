@@ -53,7 +53,7 @@ export default function HomePage() {
         {/* 文字内容 */}
         <div className="max-w-4xl w-full relative z-10 text-center">
           <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tight text-white leading-tight uppercase">
-            Xie Yike
+            <T k="ui.artistName" />
           </h1>
           <p className="mt-4 sm:mt-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-light">
             <T k="ui.artistRole" />
