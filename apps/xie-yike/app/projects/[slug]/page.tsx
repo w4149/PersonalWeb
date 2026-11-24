@@ -104,9 +104,9 @@ export default async function ProjectDetailPage({
         {/* 分割线 */}
         <hr className="border-gray-200 my-12" />
 
-        {/* 作品列表（Grid 视图） */}
+        {/* 作品列表（Grid 视图）——暂时隐藏（精选作品），恢复时删除下方 <section> 上的 hidden */}
         {works.length > 0 && (
-          <section>
+          <section hidden>
             <h2
               className="text-2xl sm:text-3xl font-medium text-gray-900 mb-8"
               style={{ fontFamily: TITLE_FONT }}
