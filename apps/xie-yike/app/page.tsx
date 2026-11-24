@@ -170,8 +170,8 @@ export default function HomePage() {
                 >
                   {exhibition.title}
                 </h3>
-                <p className="text-sm text-gray-600 mb-0.5">{exhibition.dateRange}</p>
-                <p className="text-sm text-gray-600">{exhibition.location}</p>
+                <p className="text-sm text-gray-600 mb-0.5">{exhibition.time}</p>
+                <p className="text-sm text-gray-600">{exhibition.address}</p>
               </div>
             </Link>
           </div>
