@@ -199,8 +199,9 @@ export default function HomePage() {
       ))}
 
       {/* ============================================================
-          SECTION 5 · OTHER WORKS
+          SECTION 5 · OTHER WORKS（暂时隐藏，恢复时把下方 false 改为 true）
       ============================================================ */}
+      {false && (
       <section id="other-works" className="snap-start min-h-screen w-full">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 md:px-16 lg:px-24 py-16 md:py-24">
           <h1
@@ -227,19 +228,14 @@ export default function HomePage() {
           )}
         </div>
       </section>
+      )}
 
       {/* ============================================================
-          SECTION 6 · NEWS
+          SECTION 6 · NEWS（仅显示 coming soon）
       ============================================================ */}
-      <section id="news" className="snap-start min-h-screen w-full">
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 md:px-16 lg:px-24 py-16 md:py-24">
-          <h1
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-serif italic text-gray-900 mb-12 md:mb-16"
-            style={{ fontFamily: TITLE_FONT }}
-          >
-            <T k="section.news" />
-          </h1>
-          <p className="text-gray-500 text-base sm:text-lg">
+      <section id="news" className="snap-start min-h-screen w-full flex items-center justify-center">
+        <div className="text-center px-6">
+          <p className="text-gray-500 text-base sm:text-lg md:text-xl italic">
             <T k="ui.newsComingSoon" />
           </p>
         </div>

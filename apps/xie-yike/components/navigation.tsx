@@ -12,7 +12,8 @@ const navItems = [
   { anchor: "#about", legacyPath: "/about", labelKey: "nav.about" },
   { anchor: "#exhibitions", legacyPath: "/exhibitions", labelKey: "nav.exhibitions" },
   { anchor: "#projects", legacyPath: "/projects", labelKey: "nav.projects" },
-  { anchor: "#other-works", legacyPath: "/other-works", labelKey: "nav.otherWorks" },
+  // 暂时隐藏 Other Works（恢复时取消下方注释）
+  // { anchor: "#other-works", legacyPath: "/other-works", labelKey: "nav.otherWorks" },
   { anchor: "#news", legacyPath: "/news", labelKey: "nav.news" },
 ];
 
