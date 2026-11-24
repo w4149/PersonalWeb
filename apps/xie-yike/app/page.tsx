@@ -48,27 +48,10 @@ export default function HomePage() {
       ============================================================ */}
       <section
         id="home"
-        className="snap-start min-h-screen w-full relative flex flex-col justify-center px-6 sm:px-8 md:px-16 lg:px-24 py-24 sm:py-20 overflow-hidden"
+        className="snap-start min-h-screen w-full relative flex flex-col justify-center items-center px-6 sm:px-8 md:px-16 lg:px-24 py-24 sm:py-20 overflow-hidden bg-black"
       >
-        {/* 背景图（宽度中间 80%，高度中间 60%） */}
-        <div
-          className="absolute"
-          style={{ left: "-12.5%", top: "-33.33%", width: "125%", height: "166.67%" }}
-        >
-          <Image
-            src={`${R2}/images/backgrounds/background-1.jpg`}
-            alt=""
-            fill
-            sizes="100vw"
-            className="object-cover"
-            priority
-          />
-        </div>
-        {/* 黑色半透明蒙版 */}
-        <div className="absolute inset-0 bg-black/40" />
-
         {/* 文字内容 */}
-        <div className="max-w-4xl w-full relative z-10">
+        <div className="max-w-4xl w-full relative z-10 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light tracking-tight text-white leading-tight">
             Xie Yike{" "}
             <span className="block sm:inline text-white/70 font-normal text-2xl sm:text-3xl md:text-5xl lg:text-6xl mt-2 sm:mt-0">
@@ -77,10 +60,6 @@ export default function HomePage() {
           </h1>
           <p className="mt-4 sm:mt-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl italic text-white/80 font-light">
             <T k="ui.artistRole" />
-          </p>
-          <p className="mt-6 sm:mt-10 max-w-3xl text-base sm:text-base md:text-lg leading-relaxed text-white/90">
-            About placeholder. This section will introduce Xie Yike&apos;s
-            artistic practice.
           </p>
         </div>
       </section>
