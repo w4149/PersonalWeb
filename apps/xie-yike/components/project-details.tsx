@@ -78,7 +78,9 @@ export function ProjectDetails({ details }: { details: DetailRow[] }) {
               alt=""
               className="w-full h-auto block"
               loading="lazy"
-              showViewOriginal={false}
+              // 附加图默认只显预览（原图常达 20-40MB），点击/按钮才就地加载原图
+              showViewOriginal={true}
+              autoLoadOriginal={false}
             />
           </div>
           {images[i + 1] && (
@@ -88,7 +90,9 @@ export function ProjectDetails({ details }: { details: DetailRow[] }) {
                 alt=""
                 className="w-full h-auto block"
                 loading="lazy"
-                showViewOriginal={false}
+                // 附加图默认只显预览（原图常达 20-40MB），点击/按钮才就地加载原图
+                showViewOriginal={true}
+                autoLoadOriginal={false}
               />
             </div>
           )}

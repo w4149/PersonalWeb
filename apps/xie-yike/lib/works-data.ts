@@ -500,8 +500,9 @@ export const projects: Project[] = [
       address: intro.address || undefined,
       description: intro.zh,
       descriptionEn: intro.en,
+      // R2 上实际只有 view-1 ~ view-6（view-7/8 不存在，会 404），故只声明 6 张
       views: Array.from(
-        { length: 8 },
+        { length: 6 },
         (_, i) => `${R2}/images/projects/${contentDir}/view-${i + 1}.jpg`
       ),
       details: detailsCsv.map((d, i) => ({

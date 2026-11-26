@@ -123,8 +123,10 @@ export function ViewsCarousel({ views }: ViewsCarouselProps) {
                     src={src}
                     alt={`View ${i + 1}`}
                     className="w-full h-full object-contain"
+                    // 场景图只显示预览图，永不自动下载原图（原图单张可达 28MB，会抢占带宽拖慢预览）
+                    // showViewOriginal=false → 无按钮、容器不可点击 → 原图永远不会被请求
                     showViewOriginal={false}
-                    autoLoadOriginal={i === index}
+                    autoLoadOriginal={false}
                   />
                 </div>
               </div>
