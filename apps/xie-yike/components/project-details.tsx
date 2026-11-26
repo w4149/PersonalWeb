@@ -113,15 +113,17 @@ export function ProjectDetails({ details }: { details: DetailRow[] }) {
         key={row.originalIndex}
         className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center"
       >
-        <div className={isEven ? "md:order-2" : "md:order-1"}>
-          <PreviewableImg
-            src={row.image}
-            alt={title || `detail-${row.originalIndex + 1}`}
-            className="w-full h-auto block"
-            loading="lazy"
-            showViewOriginal={false}
-          />
-        </div>
+        {row.image && (
+          <div className={isEven ? "md:order-2" : "md:order-1"}>
+            <PreviewableImg
+              src={row.image}
+              alt={title || `detail-${row.originalIndex + 1}`}
+              className="w-full h-auto block"
+              loading="lazy"
+              showViewOriginal={false}
+            />
+          </div>
+        )}
         <div className={isEven ? "md:order-1" : "md:order-2"}>
           {title && (
             <h3

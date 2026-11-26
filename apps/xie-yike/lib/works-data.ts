@@ -467,7 +467,8 @@ export const projects: Project[] = [
         (_, i) => `${R2}/images/projects/${contentDir}/view-${i + 1}.jpg`
       ),
       details: detailsCsv.map((d, i) => ({
-        image: detailImages[i] ?? "",
+        // 「总结」条目不配图，仅展示文字（左文右空）
+        image: d.title === "总结" ? "" : (detailImages[i] ?? ""),
         title: d.title,
         text: d.detail,
         titleEn: d.titleEn || undefined,
@@ -539,8 +540,9 @@ export const projects: Project[] = [
       address: intro.address || undefined,
       description: intro.zh,
       descriptionEn: intro.en,
+      // 实际只有 view-1 ~ view-9（R2 上 view-10/11 为多余孤儿文件，不引用）
       views: Array.from(
-        { length: 13 },
+        { length: 9 },
         (_, i) => `${R2}/images/projects/${contentDir}/view-${i + 1}.jpg`
       ),
       details: detailsCsv.map((d, i) => ({
@@ -577,8 +579,9 @@ export const projects: Project[] = [
       address: intro.address || undefined,
       description: intro.zh,
       descriptionEn: intro.en,
+      // 实际只有 view-1 ~ view-6（R2 上 view-7 为多余孤儿文件，不引用）
       views: Array.from(
-        { length: 11 },
+        { length: 6 },
         (_, i) => `${R2}/images/projects/${contentDir}/view-${i + 1}.jpg`
       ),
       details: detailsCsv.map((d, i) => ({
