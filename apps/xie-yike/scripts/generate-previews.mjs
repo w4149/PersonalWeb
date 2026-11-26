@@ -357,11 +357,20 @@ async function main() {
       const r = width / g;   // 既约宽
       const s = height / g;  // 既约高
       const maxRs = Math.max(r, s);
-      // k = floor(targetLong / maxRs)，至少为 1（否则没意义，至少 1×r,1×s）
+      // k = floor(targetLong / maxRs)
       let k = Math.floor(targetLong / maxRs);
-      if (k < 1) k = 1;
-      let pw = k * r;
-      let ph = k * s;
+      let pw, ph;
+      if (k >= 1) {
+        // 严格整数等比（零比例误差）
+        pw = k * r;
+        ph = k * s;
+      } else {
+        // 宽高接近互质（gcd≈1）时 maxRs 本身就 > targetLong，k=0；
+        // 退化为浮点等比缩放（允许 ≤1px 比例误差），否则兜底 k=1 会导致完全不缩放。
+        const scale = targetLong / longEdge;
+        pw = Math.max(1, Math.round(width * scale));
+        ph = Math.max(1, Math.round(height * scale));
+      }
       // 安全兜底（理论不会触发，但如果 targetLong 输入为 0 或负数时防御）
       if (pw < 1) pw = 1;
       if (ph < 1) ph = 1;
@@ -381,28 +390,37 @@ async function main() {
         const pStat = await fsp.stat(previewAbs);
         prevExists = true;
         if (pStat.mtimeMs >= origStat.mtimeMs) {
-          status = "SKIPPED_UP_TO_DATE";
-          stats.skipped_upToDate++;
           // 读取实际预览文件尺寸（保证 CSV 里 prevW/prevH = 浏览器读 natural dims）
           try {
             const pMeta = await sharp(previewAbs).metadata();
-            // fallback 用新的严格等比 pw/ph（替换之前旧 tw/th 变量名）
             prevW = pMeta.width ?? pw;
             prevH = pMeta.height ?? ph;
           } catch (_e) {
             prevW = pw;
             prevH = ph;
           }
-          stats.prevTotalBytes += pStat.size;
-          prevSizeKb = kb(pStat.size);
-          saved = savedPct(origSize, pStat.size);
+          // 检测未缩放：预览长边 == 原图长边 且 原图长边 > 1600（本该缩放却没缩）→ 强制重生成覆盖
+          const prevLong = Math.max(prevW, prevH);
+          const unscaled = longEdge > 1600 && prevLong === longEdge;
+          if (!unscaled) {
+            status = "SKIPPED_UP_TO_DATE";
+            stats.skipped_upToDate++;
+            stats.prevTotalBytes += pStat.size;
+            prevSizeKb = kb(pStat.size);
+            saved = savedPct(origSize, pStat.size);
+            console.log(
+              `⏭️  跳过：${CYAN}${relPath}${RESET} | 原因：预览已存在且更新 (mtime newer)`
+            );
+            appendLog(
+              `SKIP_UP_TO_DATE ${relPath} -> ${previewRelPath}`
+            );
+            return;
+          }
           console.log(
-            `⏭️  跳过：${CYAN}${relPath}${RESET} | 原因：预览已存在且更新 (mtime newer)`
+            `🔧 修复未缩放：${CYAN}${relPath}${RESET} | 预览 ${prevW}x${prevH} 未缩放，重新生成覆盖`
           );
-          appendLog(
-            `SKIP_UP_TO_DATE ${relPath} -> ${previewRelPath}`
-          );
-          return;
+          appendLog(`REGEN_UNSCALED ${relPath} | prev ${prevW}x${prevH}`);
+          // 不 return，继续走生成流程覆盖写
         }
       } catch (_notExist) {
         prevExists = false;
