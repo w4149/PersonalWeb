@@ -1,12 +1,14 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
+import { PreviewableImg } from "@personal-sites/shared";
+import { DetailImageContext } from "@/components/detail-image-context";
 import { Navigation } from "@/components/navigation";
 import { ViewsCarousel } from "@/components/views-carousel";
 import { ProjectDetails } from "@/components/project-details";
 import { T } from "@/components/i18n-text";
 import { projects, getProject, getProjectWorks } from "@/lib/works-data";
+import { toPreview } from "@/lib/preview";
 import { ExhibitionIntro } from "@/app/exhibitions/[slug]/exhibition-intro";
 import { ScrollRestorer } from "@/app/exhibitions/[slug]/scroll-restorer";
 
@@ -52,17 +54,16 @@ export default async function ProjectDetailPage({
         <Navigation />
       </Suspense>
 
-      {/* 顶部全宽封面图，等比例 */}
-      <div className="w-full bg-gray-100 relative">
-        <Image
-          src={project.coverImage}
-          alt={project.title}
-          width={1920}
-          height={1080}
-          className="w-full h-auto object-cover"
-          priority
-        />
-      </div>
+      <DetailImageContext>
+        {/* 顶部全宽封面图，等比例 */}
+        <div className="w-full bg-gray-100 relative">
+          <PreviewableImg
+            src={project.coverImage}
+            alt={project.title}
+            className="w-full object-cover"
+            style={{ aspectRatio: "16 / 9" }}
+          />
+        </div>
 
       <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-16 lg:px-24 py-12 md:py-16">
         {/* 基础信息（居中） */}
@@ -121,7 +122,7 @@ export default async function ProjectDetailPage({
                   <div key={work.slug} className="block">
                     <div className="w-full bg-white overflow-hidden">
                       <img
-                        src={work.thumbnail}
+                        src={toPreview(work.thumbnail)}
                         alt={work.title}
                         loading="lazy"
                         className="w-full h-auto block"
@@ -166,6 +167,7 @@ export default async function ProjectDetailPage({
           </Link>
         </div>
       </div>
+      </DetailImageContext>
     </main>
   );
 }

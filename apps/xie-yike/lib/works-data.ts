@@ -494,7 +494,7 @@ export const projects: Project[] = [
     return {
       slug: "project-2",
       title: intro.title || "Through Our Own Filters",
-      coverImage: `${R2}/images/projects/${contentDir}/preview/through-our-own-filters.webp`,
+      coverImage: `${R2}/images/projects/${contentDir}/through-our-own-filters.jpg`,
       contentDir,
       time: intro.time || undefined,
       address: intro.address || undefined,

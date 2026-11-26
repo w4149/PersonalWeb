@@ -16,6 +16,10 @@ import {
 // PreviewableImg 的 showViewOriginal prop 优先级最高（可覆盖 Context）。画廊层一律传 showViewOriginal={false} 来关闭按钮。
 export const FallbackThumbnailCtx = createContext<string | undefined>(undefined);
 export const ShowViewOriginalCtx = createContext<boolean>(true);
+// 3) AutoLoadOriginalCtx —— true 时 PreviewableImg 渲染预览后自动后台加载原图并 crossfade 替换。
+//    默认 false（画廊/首页只显预览、不下载原图）；WorkDetail 与项目/展览详情页提供 true。
+//    autoLoadOriginal prop 优先级最高。
+export const AutoLoadOriginalCtx = createContext<boolean>(false);
 
 // =============================================================
 // Lightbox（全屏原图浮窗）共享 Context
@@ -41,6 +45,7 @@ export const LightboxCtx = createContext<LightboxCtxValue>(LIGHTBOX_CTX_DEFAULT)
 
 export type PreviewableImgProps = React.ImgHTMLAttributes<HTMLImageElement> & {
   showViewOriginal?: boolean; // undefined → 读 Context（默认 true）；true/false → 强制覆盖。画廊层一律传 false
+  autoLoadOriginal?: boolean; // undefined → 读 AutoLoadOriginalCtx（默认 false）；true → 预览后自动加载并 crossfade 替换原图
 };
 
 // =============================================================
@@ -53,8 +58,27 @@ const DEV_PREVIEW_VERSION =
     ? "dev"
     : null;
 
+// 可由各站点注入的"原图→预览图"解析器（用尺寸验证过的 manifest 精确映射）。
+// 返回非空串 → 直接作为预览图地址（命中合格预览，或解析器自行回退原图）；
+// 返回空串/null/undefined → 回退到下面的命名转换。
+// 不注入则保持纯命名转换（deng-manyuan 的本地预览场景）。
+let previewResolver: ((origSrc: string) => string | undefined | null) | null = null;
+export function setPreviewResolver(
+  fn: ((origSrc: string) => string | undefined | null) | null
+) {
+  previewResolver = fn;
+}
+
 export function toPreviewSrc(origSrc: string): string {
   if (!origSrc) return origSrc;
+  if (previewResolver) {
+    try {
+      const r = previewResolver(origSrc);
+      if (r) return r;
+    } catch {
+      // 解析器异常 → 回退命名转换
+    }
+  }
   try {
     const lastSlash = origSrc.lastIndexOf("/");
     if (lastSlash < 0) return origSrc;
@@ -152,6 +176,7 @@ export const PreviewableImg = forwardRef<HTMLImageElement, PreviewableImgProps>(
   function PreviewableImg(props, ref) {
     const fallback = useContext(FallbackThumbnailCtx);
     const workLevelShow = useContext(ShowViewOriginalCtx);
+    const autoLoadCtx = useContext(AutoLoadOriginalCtx);
     const lightbox = useContext(LightboxCtx);
     const {
       src: origSrc = "",
@@ -160,10 +185,13 @@ export const PreviewableImg = forwardRef<HTMLImageElement, PreviewableImgProps>(
       className,
       style,
       showViewOriginal, // undefined → 走 Context；true/false → 强制覆盖
+      autoLoadOriginal, // undefined → 走 AutoLoadOriginalCtx；true/false → 强制覆盖
       ...rest
     } = props;
     const finalShowVO =
       showViewOriginal !== undefined ? !!showViewOriginal : !!workLevelShow;
+    const finalAutoLoad =
+      autoLoadOriginal !== undefined ? !!autoLoadOriginal : !!autoLoadCtx;
 
     // 判定：Legacy Stacking 模式？
     const isLegacyStacking = /(^|\s)absolute(\s|$)/.test(className ?? "");
@@ -171,9 +199,19 @@ export const PreviewableImg = forwardRef<HTMLImageElement, PreviewableImgProps>(
     // ====== 状态（声明在使用前，避免 TDZ）======
     const [stage, setStage] = useState<0 | 1 | 2>(0);
     const [previewErrored, setPreviewErrored] = useState(false);
+    const [previewLoaded, setPreviewLoaded] = useState(false);
     const [originalRequested, setOriginalRequested] = useState(false);
     const [originalLoaded, setOriginalLoaded] = useState(false);
     const [originalErrored, setOriginalErrored] = useState(false);
+
+    // ====== 自动加载原图（详情页 / 项目·展览页）：预览先显，原图后台加载后 crossfade 替换 ======
+    // 原图延后到预览图加载完成（或失败）后再请求，避免大原图抢占同域连接/带宽，
+    // 保证小预览图先秒出，用户看不到空白的加载过程。
+    useEffect(() => {
+      if (finalAutoLoad && (previewLoaded || previewErrored)) {
+        setOriginalRequested(true);
+      }
+    }, [finalAutoLoad, previewLoaded, previewErrored]);
 
     // ====== 三级源路径（preview 底层 + 原图顶层）======
     const basePreview: string =
@@ -298,8 +336,10 @@ export const PreviewableImg = forwardRef<HTMLImageElement, PreviewableImgProps>(
               "[grid-area:img]"
             )}
             style={makeImgStyle(originalLoaded ? 0 : 1)}
+            fetchPriority="high"
             onError={handlePreviewImgError}
             onLoad={(e) => {
+              setPreviewLoaded(true);
               outerOnLoad?.(e);
             }}
           />
@@ -319,6 +359,7 @@ export const PreviewableImg = forwardRef<HTMLImageElement, PreviewableImgProps>(
             style={makeImgStyle(
               originalErrored ? 0 : originalLoaded ? 1 : 0.4
             )}
+            fetchPriority="low"
             onError={() => {
               setOriginalErrored(true);
               setOriginalLoaded(false);

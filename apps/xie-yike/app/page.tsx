@@ -16,6 +16,7 @@ import {
   getOtherWork,
   R2,
 } from "@/lib/works-data";
+import { toPreview } from "@/lib/preview";
 
 const TITLE_FONT =
   "ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif";
@@ -69,7 +70,7 @@ export default function HomePage() {
           {/* 艺术家照片 */}
           <div className="flex justify-center mb-10 md:mb-14">
             <Image
-              src={`${R2}/images/introduction/yike_xie.jpg`}
+              src={toPreview(`${R2}/images/introduction/yike_xie.jpg`)}
               alt="Xie Yike"
               width={2943}
               height={3924}
@@ -93,7 +94,7 @@ export default function HomePage() {
       <section className="snap-start h-[50vh] w-full relative overflow-hidden bg-gray-100">
         <div className="absolute inset-y-0" style={{ left: "-12.5%", width: "125%" }}>
           <Image
-            src={`${R2}/images/bridges/bridge-to-exhibition.jpg`}
+            src={toPreview(`${R2}/images/bridges/bridge-to-exhibition.jpg`)}
             alt=""
             fill
             sizes="125vw"
@@ -130,7 +131,7 @@ export default function HomePage() {
                 style={{ aspectRatio: "4/3" }}
               >
                 <Image
-                  src={exhibition.coverImage}
+                  src={toPreview(exhibition.coverImage)}
                   alt={exhibition.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 896px"
@@ -180,7 +181,7 @@ export default function HomePage() {
                 style={{ aspectRatio: "4/3" }}
               >
                 <Image
-                  src={project.coverImage}
+                  src={toPreview(project.coverImage)}
                   alt={project.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 896px"

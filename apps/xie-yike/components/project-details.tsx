@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { PreviewableImg } from "@personal-sites/shared";
 import type { DetailRow } from "@/lib/works-data";
 import { useLanguage } from "@/lib/i18n";
 
@@ -72,20 +73,22 @@ export function ProjectDetails({ details }: { details: DetailRow[] }) {
           className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12"
         >
           <div>
-            <img
+            <PreviewableImg
               src={images[i]}
               alt=""
               className="w-full h-auto block"
               loading="lazy"
+              showViewOriginal={false}
             />
           </div>
           {images[i + 1] && (
             <div>
-              <img
+              <PreviewableImg
                 src={images[i + 1]}
                 alt=""
                 className="w-full h-auto block"
                 loading="lazy"
+                showViewOriginal={false}
               />
             </div>
           )}
@@ -107,11 +110,12 @@ export function ProjectDetails({ details }: { details: DetailRow[] }) {
         className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center"
       >
         <div className={isEven ? "md:order-2" : "md:order-1"}>
-          <img
+          <PreviewableImg
             src={row.image}
             alt={title || `detail-${row.originalIndex + 1}`}
             className="w-full h-auto block"
             loading="lazy"
+            showViewOriginal={false}
           />
         </div>
         <div className={isEven ? "md:order-1" : "md:order-2"}>

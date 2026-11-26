@@ -10,3 +10,5 @@ dist
 apps/deng-manyuan/public/images/
 apps/xie-yike/public/images/
 image/
+# 图片预览校验脚本的运行日志（源码以 lib/preview-manifest.json 为准）
+apps/xie-yike/scripts/logs/

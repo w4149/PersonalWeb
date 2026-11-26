@@ -14,6 +14,7 @@ import { GAP } from "../lib/gallery-config";
 import {
   FallbackThumbnailCtx,
   ShowViewOriginalCtx,
+  AutoLoadOriginalCtx,
   PreviewableImg,
   LightboxProvider,
   toPreviewSrc,
@@ -2300,7 +2301,9 @@ export function WorkDetail({ work, index, gap = GAP, year }: Props) {
     <LightboxProvider>
       <FallbackThumbnailCtx.Provider value={work.thumbnail}>
         <ShowViewOriginalCtx.Provider value={showWorkLevelVO}>
-          {node}
+          <AutoLoadOriginalCtx.Provider value={true}>
+            {node}
+          </AutoLoadOriginalCtx.Provider>
         </ShowViewOriginalCtx.Provider>
       </FallbackThumbnailCtx.Provider>
     </LightboxProvider>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import Image from "next/image";
+import { PreviewableImg } from "@personal-sites/shared";
 import { useLanguage } from "@/lib/i18n";
 
 interface ViewsCarouselProps {
@@ -79,6 +79,15 @@ export function ViewsCarousel({ views }: ViewsCarouselProps) {
 
   const progress = ((index + 1) / views.length) * 100;
 
+  // 只渲染当前 slide + 左右相邻各 1 张，其余不渲染，避免一次性请求全部预览图
+  // 抢占同域连接导致后面的 slide 预览排队、无法秒出。相邻 slide 预加载保证切换流畅。
+  const shouldRenderSlide = (i: number) => {
+    if (views.length <= 3) return true;
+    const prev = (index - 1 + views.length) % views.length;
+    const next = (index + 1) % views.length;
+    return i === index || i === prev || i === next;
+  };
+
   return (
     <section className="mb-12">
       {/* 图片 + 左右箭头（箭头在容器外部两侧） */}
@@ -97,7 +106,9 @@ export function ViewsCarousel({ views }: ViewsCarouselProps) {
         {/* 图片容器 */}
         <div className="relative flex-1 overflow-hidden bg-white">
           <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
-            {views.map((src, i) => (
+            {views.map((src, i) => {
+              if (!shouldRenderSlide(i)) return null;
+              return (
               <div
                 key={i}
                 className="absolute inset-0 transition-opacity"
@@ -107,16 +118,18 @@ export function ViewsCarousel({ views }: ViewsCarouselProps) {
                   pointerEvents: i === index ? "auto" : "none",
                 }}
               >
-                <Image
-                  src={src}
-                  alt={`View ${i + 1}`}
-                  fill
-                  sizes="100vw"
-                  className="object-contain"
-                  priority={i === 0}
-                />
+                <div className="absolute inset-0">
+                  <PreviewableImg
+                    src={src}
+                    alt={`View ${i + 1}`}
+                    className="w-full h-full object-contain"
+                    showViewOriginal={false}
+                    autoLoadOriginal={i === index}
+                  />
+                </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
