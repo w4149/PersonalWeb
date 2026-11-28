@@ -93,7 +93,7 @@ export interface Project {
 }
 
 export interface DetailRow {
-  image: string;                 // 详情主图（detail-{行号}.jpg）
+  image: string;                 // 详情主图（detail-{行号}.jpg）；设为 "" 则该行不渲染图片列，仅展示文字（左文右空）
   title: string;                 // 中文小标题
   text: string;                  // 中文正文
   titleEn?: string;              // 英文小标题（缺则回退中文）
@@ -287,6 +287,8 @@ public/images/projects/memory/
 - 箭头：位于图片容器**外部两侧**，纯 SVG 无背景
 - 进度条 + 计数器：图片下方，`当前序号 / 总数`
 - 空状态：`views.length === 0` 时显示 16:9 灰底 + `t("ui.viewsEmpty")`（「现场图待补充」/ "Views to be added"）
+
+> ⚠️ **`views` 数量必须与 R2 实际文件对齐**：`works-data.ts` 中 `views: Array.from({ length: N })` 的 N 必须等于 R2（及本地 `public/images/`）上实际存在的 `view-1.jpg ~ view-N.jpg` 数量。若 N 大于实际文件数，超出的轮播项会 404 空白。修改前先用 HEAD 请求探测 R2（命令见 README「内容维护规约」），确认存在哪些文件再定 N。
 
 **布局示意**：
 

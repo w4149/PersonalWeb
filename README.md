@@ -373,6 +373,89 @@ cd apps/deng-manyuan ; npx tsc --noEmit
 
 ---
 
+## 内容维护规约（常见操作 SOP）
+
+以下操作均围绕 `apps/xie-yike` 的内容（CSV 文案 + R2 图片 + 预览图），是日常维护最容易踩坑的环节。命令均已在本仓库验证可用。
+
+### CSV 编辑（GBK 编码，必须用 PowerShell）
+
+`content/` 下所有 CSV 均为 **GBK 编码**（`lib/csv.ts` 用 `TextDecoder("gbk")` 读取）。
+
+> ⚠️ **不要**用编辑器或 IDE 的 Edit 工具直接保存 CSV——会被转成 UTF-8，导致中文乱码。
+> ⚠️ **Grep 工具搜不到 GBK 中文**（ripgrep 默认按 UTF-8 匹配），搜索 CSV 内容必须用 PowerShell。
+
+**读取（GBK → 控制台 UTF-8 显示）：**
+
+```powershell
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$gbk = [System.Text.Encoding]::GetEncoding(936)
+$path = "apps/xie-yike/content/projects/through-our-own-filters/details.csv"
+$text = [System.IO.File]::ReadAllText($path, $gbk)
+Write-Output $text
+```
+
+**修改并写回（保持 GBK 编码）：**
+
+```powershell
+$gbk = [System.Text.Encoding]::GetEncoding(936)
+$path = "apps/xie-yike/content/projects/xxx/details.csv"
+$text = [System.IO.File]::ReadAllText($path, $gbk)
+$text = $text -replace "旧文本", "新文本"          # 正则替换；匹配换行用 (\r?\n)+
+[System.IO.File]::WriteAllText($path, $text, $gbk)  # 必须用 GBK 写回
+```
+
+### R2 图片探测 + view 数量对齐
+
+`works-data.ts` 中每个项目的 `views: Array.from({ length: N })` 的 **N 必须与 R2 上实际存在的 `view-1.jpg ~ view-N.jpg` 数量一致**，否则页面会出现 404 空白。
+
+- R2 公共前缀（xie-yike）：`https://pub-191526e40b2f4ebe994bafe555eeeeb7.r2.dev`，在 `lib/works-data.ts` 中导出为 `R2`。
+- 完整 URL = `${R2}/images/projects/{contentDir}/view-N.jpg`。
+
+**探测 R2 上某项目的 view 文件是否存在（HEAD 请求）：**
+
+```powershell
+$base = "https://pub-191526e40b2f4ebe994bafe555eeeeb7.r2.dev/images/projects/behind-the-display"
+for ($i = 1; $i -le 12; $i++) {
+  try {
+    $r = Invoke-WebRequest -Uri "$base/view-$i.jpg" -Method Head -UseBasicParsing -TimeoutSec 20
+    Write-Output ("view-{0}: OK" -f $i)
+  } catch {
+    Write-Output ("view-{0}: {1}" -f $i, $_.Exception.Response.StatusCode.value__)
+  }
+}
+```
+
+改完 `length` 后务必 build + 浏览器验证对应页面的计数器上限、无 404、无空白。
+
+### CSV 文案审查（防止擅自添加内容）
+
+编辑 CSV 后，**全量扫描所有 CSV**，检查是否有非用户原文的擅自添加（问句、征询语、agent 口吻）。
+
+**扫描所有含全角问号「？」的行**（正式艺术文案不应出现问句）：
+
+```powershell
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$gbk = [System.Text.Encoding]::GetEncoding(936)
+Get-ChildItem "apps" -Recurse -Filter *.csv -File | ForEach-Object {
+  $lines = ([System.IO.File]::ReadAllText($_.FullName, $gbk)) -split "`r?`n"
+  for ($i = 0; $i -lt $lines.Count; $i++) {
+    if ($lines[$i] -match "？") { Write-Output ("{0}:{1}: {2}" -f $_.FullName, ($i + 1), $lines[$i]) }
+  }
+}
+```
+
+也可追加扫描可疑模式：`吗？`、`吧？`、`需要.*吗`、`是否`、`要不要`。命中后**人工判断**是否为正文正常用词（例如 memory 文案里的「需要观众走近」是正常内容，不是擅自添加）。
+
+### 预览图生成 + 无图行渲染
+
+- **生成 WebP 预览**：`cd apps/xie-yike ; node scripts/generate-previews.mjs`。脚本增量生成（preview 更新时间 ≥ 原图则跳过），并会自动重生成「未缩放」的旧预览（长边 > 1600px 但实际未缩放的，会被覆盖重生成）。
+- **详情行无图（左文右空）**：在 `works-data.ts` 的 `details` map 中把某行 `image` 设为 `""`，`renderRow`（`components/project-details.tsx`）就不会渲染该图片列，文字保留在原位。例如 memory 项目的「总结」行：
+  ```ts
+  image: d.title === "总结" ? "" : (detailImages[i] ?? ""),
+  ```
+
+---
+
 ## 版本快照
 
 ### Deng Manyuan（2026-08-29）
@@ -389,9 +472,9 @@ cd apps/deng-manyuan ; npx tsc --noEmit
 - 内容源：`content/` 下 CSV（GBK）驱动所有项目/展览/简介文字；`details.csv` 支持 level 分级与附加图片
 - Projects：4 个，全部接入 CSV 内容
   - `project-1`「回忆 / memory」：12 张 views + 16 条 details + 7 件作品
-  - `project-2`「Through Our Own Filters」：8 张 views + 3 条 details（works 待指定）
-  - `project-3`「Behind the Display」：13 张 views + 3 条 details（works 待指定）
-  - `project-4`「Drawn into the Depths」：11 张 views + 2 条 details（works 待指定）
+  - `project-2`「Through Our Own Filters」：6 张 views + 3 条 details（works 待指定）
+  - `project-3`「Behind the Display」：9 张 views + 3 条 details（works 待指定）
+  - `project-4`「Drawn into the Depths」：6 张 views + 2 条 details（works 待指定）
 - Exhibitions：2 个，全部接入 CSV 内容与现场图
   - `when-everything-changes`：6 张 views + 18 件作品
   - `the-landscape-of-chaos`：5 张 views + 15 件作品
