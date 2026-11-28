@@ -30,6 +30,9 @@ function useHash() {
 
 function LanguageToggle() {
   const { lang, setLang } = useLanguage();
+  const pathname = usePathname();
+  // 首页（/）为深色背景，语言切换文字用白色；其他页面背景为白，用黑色
+  const isHome = pathname === "/";
 
   const langs: { code: Language; label: string }[] = [
     { code: "en", label: "EN" },
@@ -45,15 +48,26 @@ function LanguageToggle() {
             className={cn(
               "transition-colors",
               lang === l.code
-                ? "text-gray-900 font-medium"
-                : "text-gray-400 hover:text-gray-600"
+                ? isHome
+                  ? "text-white font-medium"
+                  : "text-black font-medium"
+                : isHome
+                ? "text-white/60 hover:text-white/80"
+                : "text-black/60 hover:text-black/80"
             )}
             aria-label={`Switch to ${l.label}`}
           >
             {l.label}
           </button>
           {i < langs.length - 1 && (
-            <span className="mx-1.5 text-gray-300">|</span>
+            <span
+              className={cn(
+                "mx-1.5",
+                isHome ? "text-white/40" : "text-black/40"
+              )}
+            >
+              |
+            </span>
           )}
         </span>
       ))}
